@@ -4,14 +4,14 @@ import { conversationService } from "../services/conversation.service"
 export const conversationController = {
   getIndividualConversations: async (req: Request, res: Response) => {
     const conversations = await conversationService.getIndividualConversationList(
-      req.query.username as string
+      req.query.userId as string
     )
     res.status(200).json(conversations)
   },
   createConversation: async (req: Request, res: Response) => {
     const conversation_id = await conversationService.createConversation(
-      req.body.username as string,
-      req.body.friendUsername as string
+      req.body.userId as string,
+      req.body.friendUserId as string
     )
     if (conversation_id) {
       res.status(200).json(conversation_id)

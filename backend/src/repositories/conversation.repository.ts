@@ -19,33 +19,21 @@ export const conversationRepository = {
     )
     return result.rows
   },
-  addMessage: async (conversationId: string, senderName: string, message: string) => {
+  addMessage: async (conversationId: string, senderId: string, message: string) => {
     try {
-      // query senderId
-      const senderId = await db.query(
-        `
-          SELECT user_id
-          FROM USER_TABLE
-          WHERE username = $1
-        `,
-        [senderName]
-      )
       await db.query(
         `
           INSERT INTO MESSAGE(conversation_id, sender_id, message_text)
           VALUES($1, $2, $3)
         `,
-        [conversationId, senderId.rows[0].user_id, message]
+        [conversationId, senderId, message]
       )
       return true
     } catch (err) {
       return false
     }
   },
-  createConversation: async (
-    username: string,
-    otherUsername: string
-  ): Promise<Conversation | null> => {
+  createConversation: async (userId: string, otherUserId: string): Promise<Conversation | null> => {
     try {
       const conversation_id = uuidv4()
       const result = await db.query(
@@ -56,31 +44,13 @@ export const conversationRepository = {
         `,
         [conversation_id]
       )
-      // query userId
-      const userId = await db.query(
-        `
-          SELECT user_id
-          FROM USER_TABLE
-          WHERE username = $1
-        `,
-        [username]
-      )
-      // query otherUserId
-      const otherUserId = await db.query(
-        `
-          SELECT user_id
-          FROM USER_TABLE
-          WHERE username = $1
-        `,
-        [otherUsername]
-      )
       await db.query(
         `
           INSERT INTO USER_CONVERSATION(conversation_id, user_id)
           VALUES($1, $2),
                 ($1, $3)
         `,
-        [conversation_id, userId.rows[0].user_id, otherUserId.rows[0].user_id]
+        [conversation_id, userId, otherUserId]
       )
       return result.rows[0].conversation_id
     } catch (err) {
@@ -88,35 +58,52 @@ export const conversationRepository = {
       return null
     }
   },
-  getIndividualConversationList: async (username: string): Promise<Conversation[]> => {
+  getIndividualConversationList: async (userId: string): Promise<Conversation[]> => {
+    console.log("userId", userId)
     try {
-      // query userId
-      const userId = await db.query(
-        `
-          SELECT user_id
-          FROM USER_TABLE
-          WHERE username = $1
-        `,
-        [username]
-      )
-      const result = await db.query(
+      const myConversation = await db.query(
         `
           SELECT conversation_id
           FROM USER_CONVERSATION
           WHERE user_id = $1
         `,
-        [userId.rows[0].user_id]
+        [userId]
       )
-      // query conversation in result.rows
+      // query conversation in myConversation.rows
       const conversations = await db.query(
         `
           SELECT conversation_id
           FROM CONVERSATION
           WHERE conversation_id = ANY($1)
         `,
-        [result.rows.map((row) => row.conversation_id)]
+        [myConversation.rows.map((row) => row.conversation_id)]
       )
-      return conversations.rows.map((row) => row.conversation_id)
+      // query user in USER_CONVERSATION where conversation_id in conversations and user_id != userId
+      const users = await db.query(
+        `
+          SELECT user_id, conversation_id
+          FROM USER_CONVERSATION
+          WHERE conversation_id = ANY($1)
+        `,
+        [conversations.rows.map((row) => row.conversation_id)]
+      )
+      // for each user query user info with its conversation_id
+      const result = await Promise.all(
+        users.rows
+          .filter((row) => row.user_id !== userId)
+          .map(async (row) => {
+            const user = await db.query(
+              `
+              SELECT username, profile_picture
+              FROM USER_TABLE
+              WHERE user_id = $1
+            `,
+              [row.user_id]
+            )
+            return { ...user.rows[0], conversation_id: row.conversation_id }
+          })
+      )
+      return result
     } catch (err) {
       console.error("Error getting conversation list:", err)
       return []

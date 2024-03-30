@@ -31,14 +31,11 @@ export const conversationService = {
   },
 
   // Conversation service
-  getIndividualConversationList: async (username: string) => {
-    return await conversationRepository.getIndividualConversationList(username)
+  getIndividualConversationList: async (userId: string) => {
+    return await conversationRepository.getIndividualConversationList(userId)
   },
-  createConversation: async (username: string, friendUsername: string) => {
-    const conversation_id = await conversationRepository.createConversation(
-      username,
-      friendUsername
-    )
+  createConversation: async (userId: string, friendUserId: string) => {
+    const conversation_id = await conversationRepository.createConversation(userId, friendUserId)
     return conversation_id
   }
 }
