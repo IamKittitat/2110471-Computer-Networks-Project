@@ -22,7 +22,7 @@ CREATE TABLE CONVERSATION(
 CREATE TABLE USER_CONVERSATION(
     user_id CHAR(36) NOT NULL,
     conversation_id CHAR(36) NOT NULL,
-    PRIMARY KEY(user_id, conversation_id)
+    PRIMARY KEY(user_id, conversation_id),
     FOREIGN KEY(user_id) REFERENCES USER_TABLE(user_id),
     FOREIGN KEY(conversation_id) REFERENCES CONVERSATION(conversation_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
