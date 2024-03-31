@@ -1,5 +1,4 @@
 import { db } from "../configs/pgdbConnection"
-import { v4 as uuidv4 } from "uuid"
 import { Conversation } from "../models/conversation.model"
 
 export const conversationRepository = {
@@ -35,14 +34,12 @@ export const conversationRepository = {
   },
   createConversation: async (userId: string, otherUserId: string): Promise<Conversation | null> => {
     try {
-      const conversation_id = uuidv4()
-      const result = await db.query(
+      const conversation_id = await db.query(
         `
           INSERT INTO CONVERSATION(conversation_id, is_group)
-          VALUES($1, FALSE)
+          VALUES(FALSE)
           RETURNING conversation_id
-        `,
-        [conversation_id]
+        `
       )
       await db.query(
         `
@@ -50,9 +47,9 @@ export const conversationRepository = {
           VALUES($1, $2),
                 ($1, $3)
         `,
-        [conversation_id, userId, otherUserId]
+        [conversation_id.rows[0].conversation_id, userId, otherUserId]
       )
-      return result.rows[0].conversation_id
+      return conversation_id.rows[0].covnersation_id
     } catch (err) {
       console.error("Error creating conversation:", err)
       return null

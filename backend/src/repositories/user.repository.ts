@@ -1,5 +1,4 @@
 import { db } from "../configs/pgdbConnection"
-import { v4 as uuidv4 } from "uuid"
 import { User } from "../models/user.model"
 
 export const userRepository = {
@@ -13,15 +12,14 @@ export const userRepository = {
     }
   },
   register: async (username: string, password: string): Promise<User | null> => {
-    const user_id = uuidv4()
     try {
       const existedUser = await db.query("SELECT * FROM USER_TABLE WHERE username = $1", [username])
       if (existedUser.rows.length > 0) {
         return null
       }
       const user = await db.query(
-        "INSERT INTO USER_TABLE (user_id, username, password) VALUES ($1, $2, $3)",
-        [user_id, username, password]
+        "INSERT INTO USER_TABLE (username, password) VALUES ($1, $2)",
+        [username, password]
       )
       return user.rows[0]
     } catch (error) {
