@@ -1,15 +1,17 @@
 import NavBar from "../../common/components/NavBar/NavBar"
 import ConversationBox from "./components/ConversationBox"
 
-const mockSelfUserId = "11111111-1111-1111-1111-111111111111"
-const mockSelectedConversationId = "44444444-4444-4444-4444-444444444444"
+const mockSelectedConversationId = "9e0c5206-c0f2-40d0-8816-770a674da127"
 
 export default function ConversationPage() {
+
+  const userId = localStorage.getItem("token") || ""
+
   return (
     <>
       <NavBar menuFocus={"conversation"} />
       <div className="flex h-screen">
-        <ConversationBox conversationId={mockSelectedConversationId} selfUserId={mockSelfUserId} />
+        <ConversationBox conversationId={mockSelectedConversationId} selfUserId={userId} />
       </div>
     </>
   )

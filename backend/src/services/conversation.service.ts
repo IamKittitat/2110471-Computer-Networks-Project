@@ -11,9 +11,9 @@ export interface MessageType {
 export const conversationService = {
   // Socket service
   sendMessage: async (socket: Socket) => {
-    socket.on("sendMessage", async (message: MessageType, room: string, senderId: string) => {
+    socket.on("sendMessage", async (message: MessageType, room: string, senderName: string) => {
       socket.to(room).emit("receiveMessage", message)
-      const isSuccess = await conversationRepository.addMessage(room, senderId, message.message)
+      const isSuccess = await conversationRepository.addMessage(room, senderName, message.message)
       if (!isSuccess) {
         console.error("Error sending message")
       }
@@ -28,5 +28,14 @@ export const conversationService = {
     socket.on("disconnect", () => {
       console.log("User disconnected")
     })
+  },
+
+  // Conversation service
+  getIndividualConversationList: async (userId: string) => {
+    return await conversationRepository.getIndividualConversationList(userId)
+  },
+  createConversation: async (userId: string, friendUserId: string) => {
+    const conversation_id = await conversationRepository.createConversation(userId, friendUserId)
+    return conversation_id
   }
 }
