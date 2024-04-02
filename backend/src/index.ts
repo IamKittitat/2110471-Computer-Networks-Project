@@ -2,7 +2,6 @@ import express, { Request, Response, Application } from "express"
 import userRouter from "./routes/user.routes"
 import exampleRouter from "./routes/example.routes"
 import conversationRouter from "./routes/conversation.routes"
-import imageRouter from "./routes/image.routes"
 import cors from "cors"
 import { connectToSocket } from "./configs/socketConnection"
 import { connectToDatabase } from "./configs/pgdbConnection"
@@ -30,7 +29,6 @@ server.listen(port, () => {
 app.use("/example", exampleRouter)
 app.use("/user", userRouter)
 app.use("/conversations", conversationRouter)
-app.use("/image", imageRouter)
 
 connectToDatabase().catch((error) => {
   console.error("Error connecting to the database:", error)

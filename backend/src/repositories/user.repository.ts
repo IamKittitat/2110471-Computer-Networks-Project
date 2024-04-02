@@ -17,10 +17,10 @@ export const userRepository = {
       if (existedUser.rows.length > 0) {
         return null
       }
-      const user = await db.query(
-        "INSERT INTO USER_TABLE (username, password) VALUES ($1, $2)",
-        [username, password]
-      )
+      const user = await db.query("INSERT INTO USER_TABLE (username, password) VALUES ($1, $2)", [
+        username,
+        password
+      ])
       return user.rows[0]
     } catch (error) {
       console.error("Error adding user:", error)
@@ -41,10 +41,10 @@ export const userRepository = {
   },
   updateProfilePicture: async (userId: string, profile_picture: string): Promise<User | null> => {
     try {
-      const user = await db.query("UPDATE USER_TABLE SET profile_picture = $1 WHERE user_id = $2", [
-        profile_picture,
-        userId
-      ])
+      const user = await db.query(
+        "UPDATE USER_TABLE SET profile_picture = $1 WHERE user_id = $2 RETURNING user_id, username, profile_picture",
+        [profile_picture, userId]
+      )
       return user.rows[0]
     } catch (error) {
       console.error("Error updating profile picture:", error)

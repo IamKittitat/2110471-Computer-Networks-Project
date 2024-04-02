@@ -1,3 +1,4 @@
+import bucket from "../configs/firebase"
 import { userRepository } from "../repositories/user.repository"
 
 export const userServices = {
@@ -12,5 +13,12 @@ export const userServices = {
   },
   updateProfilePicture: async (userId: string, profile_picture: string) => {
     return await userRepository.updateProfilePicture(userId, profile_picture)
+  },
+  upload: async (userId: string, file: Express.Multer.File) => {
+    const image = bucket.file(file.originalname)
+    await image.save(file.buffer)
+    await image.makePublic()
+    const publicUrl = image.publicUrl()
+    return await userRepository.updateProfilePicture(userId, publicUrl)
   }
 }
