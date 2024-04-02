@@ -35,5 +35,16 @@ export const conversationController = {
       req.query.userId as string
     )
     res.status(200).json(conversations)
+  },
+  joinGroupConversation: async (req: Request, res: Response) => {
+    const isSuccess = await conversationService.joinGroupConversation(
+      req.body.userId as string,
+      req.body.conversationId as string
+    )
+    if (isSuccess) {
+      res.status(200).json("Successfully joined group conversation")
+    } else {
+      res.status(500).json("Error joining group conversation")
+    }
   }
 }

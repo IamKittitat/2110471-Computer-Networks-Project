@@ -181,5 +181,20 @@ export const conversationRepository = {
       console.error("Error getting conversation list:", err)
       return []
     }
+  },
+  joinGroupConversation: async (userId: string, conversationId: string): Promise<boolean> => {
+    try {
+      await db.query(
+        `
+          INSERT INTO USER_CONVERSATION(conversation_id, user_id)
+          VALUES($1, $2)
+        `,
+        [conversationId, userId]
+      )
+      return true
+    } catch (err) {
+      console.error("Error joining group conversation:", err)
+      return false
+    }
   }
 }

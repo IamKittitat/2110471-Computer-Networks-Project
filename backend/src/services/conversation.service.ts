@@ -44,5 +44,9 @@ export const conversationService = {
   },
   getGroupConversationList: async (userId: string) => {
     return await conversationRepository.getGroupConversationList(userId)
+  },
+  joinGroupConversation: async (userId: string, conversationId: string) => {
+    const isSuccess = await conversationRepository.joinGroupConversation(userId, conversationId)
+    return isSuccess
   }
 }

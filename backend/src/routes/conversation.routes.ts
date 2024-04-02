@@ -17,4 +17,8 @@ router.post("/create-group", conversationController.createGroupConversation)
 // expecting a get request to /conversations/group?userId=...
 router.get("/group", conversationController.getGroupConversations)
 
+// expecting a post request to /join-group
+// with body containing userId and conversationId
+router.post("/join-group", conversationController.joinGroupConversation)
+
 export default router
