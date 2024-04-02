@@ -55,6 +55,36 @@ export const conversationRepository = {
       return null
     }
   },
+  createGroupConversation: async (
+    userIds: string[],
+    groupName: string
+  ): Promise<Conversation | null> => {
+    try {
+      const conversation_id = await db.query(
+        `
+          INSERT INTO CONVERSATION(is_group, group_name)
+          VALUES(TRUE, $1)
+          RETURNING conversation_id
+        `,
+        [groupName]
+      )
+      await Promise.all(
+        userIds.map((userId) =>
+          db.query(
+            `
+              INSERT INTO USER_CONVERSATION(conversation_id, user_id)
+              VALUES($1, $2)
+            `,
+            [conversation_id.rows[0].conversation_id, userId]
+          )
+        )
+      )
+      return conversation_id.rows[0].conversation_id
+    } catch (err) {
+      console.error("Error creating group conversation:", err)
+      return null
+    }
+  },
   getIndividualConversationList: async (userId: string): Promise<Conversation[]> => {
     console.log("userId", userId)
     try {

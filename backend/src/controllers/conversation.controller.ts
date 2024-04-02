@@ -18,5 +18,16 @@ export const conversationController = {
     } else {
       res.status(500).json("Error creating conversation")
     }
+  },
+  createGroupConversation: async (req: Request, res: Response) => {
+    const conversation_id = await conversationService.createGroupConversation(
+      req.body.userIds as string[],
+      req.body.groupName as string
+    )
+    if (conversation_id) {
+      res.status(200).json(conversation_id)
+    } else {
+      res.status(500).json("Error creating group conversation")
+    }
   }
 }

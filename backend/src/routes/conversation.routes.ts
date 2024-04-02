@@ -10,4 +10,8 @@ router.get("/individual", conversationController.getIndividualConversations)
 // with body containing userId and friendUserId
 router.post("/", conversationController.createConversation)
 
+// expecting a post request to /conversations/create-group
+// with body containing list of userIds and groupName
+router.post("/create-group", conversationController.createGroupConversation)
+
 export default router
