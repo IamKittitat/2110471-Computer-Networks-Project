@@ -46,5 +46,9 @@ export const conversationController = {
     } else {
       res.status(500).json("Error joining group conversation")
     }
+  },
+  getMessages: async (req: Request, res: Response) => {
+    const messages = await conversationService.getMessages(req.query.conversationId as string)
+    res.status(200).json(messages)
   }
 }

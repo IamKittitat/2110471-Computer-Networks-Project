@@ -1,5 +1,5 @@
 import { db } from "../configs/pgdbConnection"
-import { Conversation } from "../models/conversation.model"
+import { Conversation, Message } from "../models/conversation.model"
 
 export const conversationRepository = {
   getMessagesByConversationId: async (conversationId: string, userId: string) => {
@@ -195,6 +195,23 @@ export const conversationRepository = {
     } catch (err) {
       console.error("Error joining group conversation:", err)
       return false
+    }
+  },
+  getMessages: async (conversationId: string): Promise<Message[]> => {
+    try {
+      const messages = await db.query(
+        `
+          SELECT sender_id, message_text, created_at
+          FROM MESSAGE
+          WHERE conversation_id = $1
+          ORDER BY created_at
+        `,
+        [conversationId]
+      )
+      return messages.rows
+    } catch (err) {
+      console.error("Error getting messages:", err)
+      return []
     }
   }
 }

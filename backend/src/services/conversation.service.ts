@@ -48,5 +48,8 @@ export const conversationService = {
   joinGroupConversation: async (userId: string, conversationId: string) => {
     const isSuccess = await conversationRepository.joinGroupConversation(userId, conversationId)
     return isSuccess
+  },
+  getMessages: async (conversationId: string) => {
+    return await conversationRepository.getMessages(conversationId)
   }
 }
