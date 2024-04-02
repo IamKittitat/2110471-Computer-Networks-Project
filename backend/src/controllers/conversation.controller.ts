@@ -29,5 +29,11 @@ export const conversationController = {
     } else {
       res.status(500).json("Error creating group conversation")
     }
+  },
+  getGroupConversations: async (req: Request, res: Response) => {
+    const conversations = await conversationService.getGroupConversationList(
+      req.query.userId as string
+    )
+    res.status(200).json(conversations)
   }
 }

@@ -41,5 +41,8 @@ export const conversationService = {
   createGroupConversation: async (userIds: string[], groupName: string) => {
     const conversation_id = await conversationRepository.createGroupConversation(userIds, groupName)
     return conversation_id
+  },
+  getGroupConversationList: async (userId: string) => {
+    return await conversationRepository.getGroupConversationList(userId)
   }
 }
