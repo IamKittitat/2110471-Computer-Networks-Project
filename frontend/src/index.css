@@ -6,3 +6,45 @@
   margin: 0;
   padding: 0;
 }
+
+h1 {
+  font-family: "Inter";
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+h2 {
+  font-family: "Inter";
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+h5 {
+  font-family: "Inter";
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+h6 {
+  font-family: "Inter";
+  font-size: 12px;
+  font-weight: 400;
+  line-height: auto;
+}
+
+button {
+  font-family: "Inter";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+text {
+  font-family: "Inter";
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 18px;
+}
