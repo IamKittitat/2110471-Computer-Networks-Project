@@ -11,7 +11,7 @@ export const userRepository = {
       return []
     }
   },
-  register: async (username: string, password: string): Promise<User | null> => {
+  register: async (username: string, password: string): Promise<string | null> => {
     try {
       const existedUser = await db.query("SELECT * FROM USER_TABLE WHERE username = $1", [username])
       if (existedUser.rows.length > 0) {
@@ -21,7 +21,7 @@ export const userRepository = {
         username,
         password
       ])
-      return user.rows[0]
+      return "User added successfully!"
     } catch (error) {
       console.error("Error adding user:", error)
       return null

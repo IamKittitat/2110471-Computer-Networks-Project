@@ -36,7 +36,7 @@ export const conversationRepository = {
     try {
       const conversation_id = await db.query(
         `
-          INSERT INTO CONVERSATION(conversation_id, is_group)
+          INSERT INTO CONVERSATION(is_group)
           VALUES(FALSE)
           RETURNING conversation_id
         `
@@ -49,7 +49,7 @@ export const conversationRepository = {
         `,
         [conversation_id.rows[0].conversation_id, userId, otherUserId]
       )
-      return conversation_id.rows[0].covnersation_id
+      return conversation_id.rows[0].conversation_id
     } catch (err) {
       console.error("Error creating conversation:", err)
       return null
