@@ -1,5 +1,5 @@
 import { db } from "../configs/pgdbConnection"
-import { Conversation } from "../models/conversation.model"
+import { Conversation, Message } from "../models/conversation.model"
 
 export const conversationRepository = {
   getMessagesByConversationId: async (conversationId: string, userId: string) => {
@@ -36,7 +36,7 @@ export const conversationRepository = {
     try {
       const conversation_id = await db.query(
         `
-          INSERT INTO CONVERSATION(conversation_id, is_group)
+          INSERT INTO CONVERSATION(is_group)
           VALUES(FALSE)
           RETURNING conversation_id
         `
@@ -49,9 +49,39 @@ export const conversationRepository = {
         `,
         [conversation_id.rows[0].conversation_id, userId, otherUserId]
       )
-      return conversation_id.rows[0].covnersation_id
+      return conversation_id.rows[0].conversation_id
     } catch (err) {
       console.error("Error creating conversation:", err)
+      return null
+    }
+  },
+  createGroupConversation: async (
+    userIds: string[],
+    groupName: string
+  ): Promise<Conversation | null> => {
+    try {
+      const conversation_id = await db.query(
+        `
+          INSERT INTO CONVERSATION(is_group, group_name)
+          VALUES(TRUE, $1)
+          RETURNING conversation_id
+        `,
+        [groupName]
+      )
+      await Promise.all(
+        userIds.map((userId) =>
+          db.query(
+            `
+              INSERT INTO USER_CONVERSATION(conversation_id, user_id)
+              VALUES($1, $2)
+            `,
+            [conversation_id.rows[0].conversation_id, userId]
+          )
+        )
+      )
+      return conversation_id.rows[0].conversation_id
+    } catch (err) {
+      console.error("Error creating group conversation:", err)
       return null
     }
   },
@@ -103,6 +133,84 @@ export const conversationRepository = {
       return result
     } catch (err) {
       console.error("Error getting conversation list:", err)
+      return []
+    }
+  },
+  getGroupConversationList: async (userId: string): Promise<Conversation[]> => {
+    try {
+      const joinedGroup = await db.query(
+        `
+          SELECT uc.conversation_id, c.group_name, m.message_text AS last_message, TRUE AS is_join
+          FROM user_conversation uc
+          JOIN conversation c
+          ON c.conversation_id = uc.conversation_id
+          LEFT JOIN 
+              (SELECT 
+                  conversation_id, 
+                  MAX(created_at) AS max_created_at
+              FROM 
+                  MESSAGE
+              GROUP BY 
+                  conversation_id
+              ) latest_msg ON c.conversation_id = latest_msg.conversation_id
+          LEFT JOIN 
+              MESSAGE m ON latest_msg.conversation_id = m.conversation_id
+                          AND latest_msg.max_created_at = m.created_at
+          WHERE 1=1
+            AND c.is_group = TRUE
+            AND uc.user_id = $1
+        `,
+        [userId]
+      )
+      const notJoinedGroup = await db.query(
+        `
+          SELECT c.conversation_id, c.group_name, NULL AS last_message, FALSE AS is_join
+          FROM conversation c
+          WHERE 1=1
+          AND c.is_group = TRUE
+          AND c.conversation_id NOT IN (
+            SELECT uc.conversation_id
+            FROM user_conversation uc
+            WHERE uc.user_id = $1
+          )
+        `,
+        [userId]
+      )
+      return [...joinedGroup.rows, ...notJoinedGroup.rows]
+    } catch (err) {
+      console.error("Error getting conversation list:", err)
+      return []
+    }
+  },
+  joinGroupConversation: async (userId: string, conversationId: string): Promise<boolean> => {
+    try {
+      await db.query(
+        `
+          INSERT INTO USER_CONVERSATION(conversation_id, user_id)
+          VALUES($1, $2)
+        `,
+        [conversationId, userId]
+      )
+      return true
+    } catch (err) {
+      console.error("Error joining group conversation:", err)
+      return false
+    }
+  },
+  getMessages: async (conversationId: string): Promise<Message[]> => {
+    try {
+      const messages = await db.query(
+        `
+          SELECT sender_id, message_text, created_at
+          FROM MESSAGE
+          WHERE conversation_id = $1
+          ORDER BY created_at
+        `,
+        [conversationId]
+      )
+      return messages.rows
+    } catch (err) {
+      console.error("Error getting messages:", err)
       return []
     }
   }

@@ -37,5 +37,19 @@ export const conversationService = {
   createConversation: async (userId: string, friendUserId: string) => {
     const conversation_id = await conversationRepository.createConversation(userId, friendUserId)
     return conversation_id
+  },
+  createGroupConversation: async (userIds: string[], groupName: string) => {
+    const conversation_id = await conversationRepository.createGroupConversation(userIds, groupName)
+    return conversation_id
+  },
+  getGroupConversationList: async (userId: string) => {
+    return await conversationRepository.getGroupConversationList(userId)
+  },
+  joinGroupConversation: async (userId: string, conversationId: string) => {
+    const isSuccess = await conversationRepository.joinGroupConversation(userId, conversationId)
+    return isSuccess
+  },
+  getMessages: async (conversationId: string) => {
+    return await conversationRepository.getMessages(conversationId)
   }
 }
