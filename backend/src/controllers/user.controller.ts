@@ -26,8 +26,25 @@ const login = async (req: Request, res: Response) => {
   }
 }
 
+const upload = async (req: Request, res: Response) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json("No file uploaded")
+    }
+    if (!req.body.userId) {
+      return res.status(400).json("No user id provided")
+    }
+    const file = req.file
+    const image = await userServices.upload(req.body.userId, file)
+    return res.status(200).json(image)
+  } catch (error) {
+    return res.status(500).json(error)
+  }
+}
+
 export const userController = {
   getListOfUsers,
   register,
-  login
+  login,
+  upload
 }
