@@ -11,5 +11,6 @@ router.get("/", userController.getListOfUsers)
 router.post("/register", userController.register)
 router.post("/login", userController.login)
 router.post("/upload", upload.single("profile"), userController.upload)
+router.post("/username", userController.updateUsername)
 
 export default router

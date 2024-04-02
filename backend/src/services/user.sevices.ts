@@ -20,5 +20,8 @@ export const userServices = {
     await image.makePublic()
     const publicUrl = image.publicUrl()
     return await userRepository.updateProfilePicture(userId, publicUrl)
+  },
+  updateUsername: async (userId: string, username: string) => {
+    return await userRepository.updateUsername(userId, username)
   }
 }
