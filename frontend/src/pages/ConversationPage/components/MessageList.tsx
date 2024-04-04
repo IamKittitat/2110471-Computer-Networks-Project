@@ -15,15 +15,23 @@ export default function MessageList({ messages }: { messages: MessageInformation
     scrollToBottom() // Scroll to bottom when component first renders
   }, [messages])
 
+  console.log(messages.length)
+
   return (
-    <div className="flex flex-col overflow-scroll h-screen">
+    <div className="overflow-auto h-full py-[8px] px-[16px] space-y-1">
       {messages.map((message, index) => (
         <Message
           key={index}
           message={message.message}
           sender={message.sender}
           timeSent={message.timeSent}
-          isRead={message.isRead}
+          isShowTime={
+            index > 0
+              ? index === messages.length - 1
+                ? true
+                : messages[index - 1].sender !== message.sender
+              : index === messages.length - 1
+          }
         />
       ))}
       <div ref={messagesEndRef} />

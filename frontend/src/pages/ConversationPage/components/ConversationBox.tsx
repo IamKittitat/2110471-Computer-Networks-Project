@@ -72,16 +72,14 @@ export default function ConversationBox({
   }
 
   return (
-    <div className="relative flex flex-col h-screen">
+    <div className="relative flex flex-col h-screen w-full bg-[url('../../../assets/images/common/chatBackground1.jpeg')]">
       <ConversationHeader otherName={otherName} />
       <MessageList messages={messages} />
-      <div className="mt-auto">
-        <ConversationFooter
-          messageText={messageText}
-          setMessageText={setMessageText}
-          sendMessage={sendMessage}
-        />
-      </div>
+      <ConversationFooter
+        messageText={messageText}
+        setMessageText={setMessageText}
+        sendMessage={sendMessage}
+      />
     </div>
   )
 }

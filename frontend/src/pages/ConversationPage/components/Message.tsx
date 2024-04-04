@@ -4,42 +4,54 @@ export default function Message({
   message,
   sender,
   timeSent,
-  isRead
+  isShowTime
 }: {
   message: string
   sender: senderType
   timeSent: number
-  isRead: boolean
+  isShowTime: boolean
 }) {
-  return sender === "SYSTEM" ? (
-    <>
-      <div className="flex justify-center m-1">
-        <div className="rounded-2xl p-4 bg-gray-300 bg-opacity-70 text-white h-[2px] text-xs flex justify-center items-center">
+  return (
+    <div className="flex flex-col">
+      <div
+        className={`flex ${
+          sender === "SELF" ? "flex-row" : "flex-row-reverse"
+        } justify-end items-end`}
+      >
+        <div
+          className={`rounded-t-xl px-[16px] py-[12px] ${
+            sender === "SELF"
+              ? " rounded-l-xl bg-blue-500 text-white"
+              : "rounded-r-xl bg-gray-100 text-gray-900"
+          } word-wrap break-words max-w-[600px]`}
+        >
           {message}
         </div>
       </div>
-    </>
-  ) : (
-    <div
-      className={`flex ${
-        sender === "SELF" ? "flex-row" : "flex-row-reverse"
-      } justify-end items-end m-1`}
-    >
-      <span className="mx-2 text-xs text-white">
-        {new Date(timeSent).toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit"
-        })}
-      </span>
-      <div
-        className={`rounded-lg p-4 ${
-          sender === "SELF"
-            ? " bg-white bg-opacity-84 text-black"
-            : " bg-gray-300 bg-opacity-40 text-white"
-        } word-wrap break-words max-w-[939px]`}
-      >
-        {message}
-      </div>
+      {isShowTime ? (
+        <div
+          className={`text-gray-600 pt-[4px] justify-end flex items-center space-x-1 ${
+            sender === "SELF" ? "flex-row" : "flex-row-reverse"
+          }`}
+        >
+          <h6>
+            {`${new Date(timeSent).toLocaleDateString("en-US", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric"
+            })}`}
+          </h6>
+          <div className="rounded-full h-[4px] w-[4px] bg-gray-300"></div>
+          <h6>
+            {`${new Date(timeSent).toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit"
+            })}`}
+          </h6>
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   )
 }
