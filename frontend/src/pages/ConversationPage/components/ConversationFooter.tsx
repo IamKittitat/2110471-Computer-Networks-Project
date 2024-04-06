@@ -1,4 +1,4 @@
-import SendIcon from "@mui/icons-material/Send"
+import SendIcon from "./SendIcon"
 
 export default function ConversationFooter({
   messageText,
@@ -16,20 +16,18 @@ export default function ConversationFooter({
   }
 
   return (
-    <div className="h-[59px] p-4 flex justify-center items-center">
-      <div className="flex ml-2">
-        <input
-          type="text"
-          value={messageText}
-          onChange={(e) => setMessageText(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type your Message"
-          className="p-2 bg-gray-100 rounded-l-lg w-[821px]"
-        />
-        <button onClick={sendMessage} className="p-2 bg-gray-100 rounded-r-lg">
-          <SendIcon />
-        </button>
-      </div>
+    <div className="flex w-full px-[16px] py-[12px] bg-white">
+      <input
+        type="text"
+        value={messageText}
+        onChange={(e) => setMessageText(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Aa"
+        className="bg-gray-200 rounded-l-full w-full h-[40px] px-[16px]"
+      />
+      <button onClick={sendMessage} className="p-2 bg-gray-200 rounded-r-full">
+        <SendIcon />
+      </button>
     </div>
   )
 }

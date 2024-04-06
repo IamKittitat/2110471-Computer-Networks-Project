@@ -52,10 +52,21 @@ const updateUsername = async (req: Request, res: Response) => {
   }
 }
 
+const getUserInfo = async (req: Request, res: Response) => {
+  const userId = req.query.userId as string
+  const user = await userServices.getUserInfo(userId)
+  if (user) {
+    res.status(200).json(user)
+  } else {
+    res.status(500).json("Error getting username")
+  }
+}
+
 export const userController = {
   getListOfUsers,
   register,
   login,
   upload,
-  updateUsername
+  updateUsername,
+  getUserInfo
 }

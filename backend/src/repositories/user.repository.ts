@@ -62,5 +62,17 @@ export const userRepository = {
       console.error("Error updating username:", error)
       return null
     }
+  },
+  getUserInfo: async (userId: string): Promise<User | null> => {
+    try {
+      const user = await db.query(
+        "SELECT username, profile_picture FROM USER_TABLE WHERE user_id = $1",
+        [userId]
+      )
+      return user.rows[0]
+    } catch (error) {
+      console.error("Error getting username:", error)
+      return null
+    }
   }
 }

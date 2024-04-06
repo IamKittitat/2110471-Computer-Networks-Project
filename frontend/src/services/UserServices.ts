@@ -36,5 +36,10 @@ export const userServices = {
       console.error(error)
       return null
     }
+  },
+
+  getUserInfo: async (userId: string) => {
+    const response = await fetch(`${environment.backend.url}/user/info?userId=${userId}`)
+    return await response.json()
   }
 }
