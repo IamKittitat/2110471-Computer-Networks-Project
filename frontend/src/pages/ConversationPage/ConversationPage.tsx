@@ -1,4 +1,3 @@
-import NavBar from "../../common/components/NavBar/NavBar"
 import ConversationBox from "./components/ConversationBox"
 
 const mockSelectedConversationId = "9e0c5206-c0f2-40d0-8816-770a674da127"

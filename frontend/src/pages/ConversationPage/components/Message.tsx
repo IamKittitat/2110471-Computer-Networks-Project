@@ -1,28 +1,22 @@
-import { senderType } from "../types/MessageInformation"
-
 export default function Message({
   message,
   sender,
   timeSent,
-  isShowTime
+  isShowTime,
+  self
 }: {
   message: string
-  sender: senderType
+  sender: string
   timeSent: number
   isShowTime: boolean
+  self: boolean
 }) {
   return (
     <div className="flex flex-col">
-      <div
-        className={`flex ${
-          sender === "SELF" ? "flex-row" : "flex-row-reverse"
-        } justify-end items-end`}
-      >
+      <div className={`flex ${self ? "flex-row" : "flex-row-reverse"} justify-end items-end`}>
         <div
           className={`rounded-t-xl px-[16px] py-[12px] ${
-            sender === "SELF"
-              ? " rounded-l-xl bg-blue-500 text-white"
-              : "rounded-r-xl bg-gray-100 text-gray-900"
+            self ? " rounded-l-xl bg-blue-500 text-white" : "rounded-r-xl bg-gray-100 text-gray-900"
           } word-wrap break-words max-w-[600px]`}
         >
           {message}
@@ -31,7 +25,7 @@ export default function Message({
       {isShowTime ? (
         <div
           className={`text-gray-600 pt-[4px] justify-end flex items-center space-x-1 ${
-            sender === "SELF" ? "flex-row" : "flex-row-reverse"
+            self ? "flex-row" : "flex-row-reverse"
           }`}
         >
           <h6>

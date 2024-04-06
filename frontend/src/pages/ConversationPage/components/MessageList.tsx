@@ -2,7 +2,13 @@ import Message from "./Message"
 import { useEffect, useRef } from "react"
 import { MessageInformation } from "../types/MessageInformation"
 
-export default function MessageList({ messages }: { messages: MessageInformation[] }) {
+export default function MessageList({
+  messages,
+  selfUserId
+}: {
+  messages: MessageInformation[]
+  selfUserId: string
+}) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -15,22 +21,21 @@ export default function MessageList({ messages }: { messages: MessageInformation
     scrollToBottom() // Scroll to bottom when component first renders
   }, [messages])
 
-  console.log(messages.length)
+  console.log(messages)
 
   return (
     <div className="overflow-auto h-full py-[8px] px-[16px] space-y-1">
       {messages.map((message, index) => (
         <Message
           key={index}
-          message={message.message}
-          sender={message.sender}
-          timeSent={message.timeSent}
+          message={message.message_text}
+          sender={message.sender_id}
+          self={message.sender_id === selfUserId}
+          timeSent={message.created_at}
           isShowTime={
-            index > 0
-              ? index === messages.length - 1
-                ? true
-                : messages[index - 1].sender !== message.sender
-              : index === messages.length - 1
+            index === messages.length - 1
+              ? true
+              : message.sender_id !== messages[index + 1].sender_id
           }
         />
       ))}

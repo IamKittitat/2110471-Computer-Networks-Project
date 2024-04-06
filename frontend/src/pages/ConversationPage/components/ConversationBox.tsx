@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import io from "socket.io-client"
 import MessageList from "./MessageList"
 import ConversationFooter from "./ConversationFooter"
-// import { ConversationService } from "../services/ConversationService"
+import { conversationServices } from "../../../services/ConversationServices"
 import { environment } from "../../../common/constants/environment"
 import ConversationHeader from "./ConversationHeader"
 import { MessageInformation } from "../types/MessageInformation"
@@ -21,20 +21,17 @@ export default function ConversationBox({
   const [otherName, setOtherName] = useState<string>("")
   const room = conversationId
 
-  // useEffect(() => {
-  //   const fetchMessages = async () => {
-  //     const messages = await ConversationService.getMessagesByConversationId(conversationId, userId)
-  //     setMessages(messages)
-  //   }
-  //   const fetchName = async () => {
-  //     if (conversationId) {
-  //       const data = await ConversationService.getNameByConversationId(conversationId, userId)
-  //       setName(data.name)
-  //     }
-  //   }
-  //   fetchName()
-  //   fetchMessages()
-  // }, [conversationId])
+  conversationId = "9e0c5206-c0f2-40d0-8816-770a674da127"
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const messages = await conversationServices.getMessagesByConversationId(conversationId)
+      setMessages(messages)
+
+      console.log(messages)
+    }
+    fetchMessages()
+  }, [])
 
   useEffect(() => {
     socket.on("receiveMessage", (message: MessageInformation) => {
@@ -58,20 +55,14 @@ export default function ConversationBox({
       {
         message_text: messageText,
         sender_id: selfUserId,
-        created_at: new Date(),
-        conversation_id: conversationId
+        created_at: new Date()
       },
       room,
       selfUserId
     )
     setMessages([
       ...messages,
-      {
-        message_text: messageText,
-        sender_id: selfUserId,
-        created_at: new Date(),
-        conversation_id: conversationId
-      }
+      { message_text: messageText, sender_id: selfUserId, created_at: Date.now() }
     ])
     setMessageText("")
   }
@@ -79,7 +70,7 @@ export default function ConversationBox({
   return (
     <div className="relative flex flex-col h-screen w-full bg-[url('../../../assets/images/common/chatBackground1.jpeg')]">
       <ConversationHeader otherName={otherName} />
-      <MessageList messages={messages} />
+      <MessageList messages={messages} selfUserId={selfUserId} />
       <ConversationFooter
         messageText={messageText}
         setMessageText={setMessageText}
