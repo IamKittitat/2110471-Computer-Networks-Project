@@ -1,19 +1,17 @@
 import { Socket } from "socket.io"
 import { conversationRepository } from "../repositories/conversation.repository"
-
-export interface MessageType {
-  message: string
-  sender: "SELF" | "OTHER" | "SYSTEM"
-  isRead: boolean
-  timeSent: number
-}
+import { Message } from "../models/conversation.model"
 
 export const conversationService = {
   // Socket service
   sendMessage: async (socket: Socket) => {
-    socket.on("sendMessage", async (message: MessageType, room: string, senderName: string) => {
+    socket.on("sendMessage", async (message: Message, room: string, senderId: string) => {
       socket.to(room).emit("receiveMessage", message)
-      const isSuccess = await conversationRepository.addMessage(room, senderName, message.message)
+      const isSuccess = await conversationRepository.addMessage(
+        room,
+        senderId,
+        message.message_text
+      )
       if (!isSuccess) {
         console.error("Error sending message")
       }

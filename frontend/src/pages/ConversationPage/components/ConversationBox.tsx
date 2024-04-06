@@ -56,17 +56,22 @@ export default function ConversationBox({
     socket.emit(
       "sendMessage",
       {
-        message: messageText,
-        sender: "OTHER",
-        isRead: false,
-        timeSent: Date.now()
+        message_text: messageText,
+        sender_id: selfUserId,
+        created_at: new Date(),
+        conversation_id: conversationId
       },
       room,
       selfUserId
     )
     setMessages([
       ...messages,
-      { message: messageText, sender: "SELF", isRead: true, timeSent: Date.now() }
+      {
+        message_text: messageText,
+        sender_id: selfUserId,
+        created_at: new Date(),
+        conversation_id: conversationId
+      }
     ])
     setMessageText("")
   }
