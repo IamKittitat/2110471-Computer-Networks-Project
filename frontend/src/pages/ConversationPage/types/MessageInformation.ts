@@ -1,8 +1,6 @@
-export type senderType = "SELF" | "OTHER" | "SYSTEM"
-
 export interface MessageInformation {
-  message: string
-  sender: senderType
-  isRead: boolean
-  timeSent: number
+  conversation_id: string
+  sender_id: string
+  message_text: string
+  created_at: Date
 }
