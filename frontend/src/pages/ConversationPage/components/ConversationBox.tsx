@@ -11,24 +11,33 @@ const socket = io(environment.backend.url)
 
 export default function ConversationBox({
   conversationId,
-  selfUserId
+  selfUserId,
+  conversationName,
+  conversationPicture,
+  isGroup
 }: {
   conversationId: string | null
   selfUserId: string
+  conversationName: string
+  conversationPicture: string
+  isGroup: boolean
 }) {
   const [messages, setMessages] = useState<MessageInformation[]>([])
   const [messageText, setMessageText] = useState<string>("")
-  const [otherName, setOtherName] = useState<string>("")
+  const [bg, setBg] = useState<string>("")
+  const [bgNumber, setBgNumber] = useState<number>(0)
   const room = conversationId
-
-  conversationId = "9e0c5206-c0f2-40d0-8816-770a674da127"
+  const bgList = [
+    "'https://i.postimg.cc/y8SvnRg1/sky-1286888-1280.jpg'",
+    "'https://www.patternpictures.com/wp-content/uploads/Early-morning-sunset-sky-patternpictures-3612-1600x1063.jpg'",
+    "'https://media.istockphoto.com/id/835370890/photo/sunset-sunrise-with-clouds-light-rays-and-other-atmospheric-effect.jpg?s=612x612&w=0&k=20&c=zGDOBYVFY74wX2gUgkonYGtNl1zenev5mPotAqUlJbM='",
+    ""
+  ]
 
   useEffect(() => {
     const fetchMessages = async () => {
       const messages = await conversationServices.getMessagesByConversationId(conversationId)
       setMessages(messages)
-
-      console.log(messages)
     }
     fetchMessages()
   }, [])
@@ -67,10 +76,22 @@ export default function ConversationBox({
     setMessageText("")
   }
 
+  const handleButtonClick = () => {
+    setBgNumber((bgNumber + 1) % bgList.length)
+    setBg(bgList[bgNumber])
+  }
+
   return (
-    <div className="relative flex flex-col h-screen w-full bg-[url('../../../assets/images/common/chatBackground1.jpeg')]">
-      <ConversationHeader otherName={otherName} />
-      <MessageList messages={messages} selfUserId={selfUserId} />
+    <div
+      className={`relative flex flex-col h-screen w-full bg-cover
+    bg-[url(${bg})]`}
+    >
+      <ConversationHeader
+        conversationName={conversationName}
+        conversationPicture={conversationPicture}
+        onClick={handleButtonClick}
+      />
+      <MessageList messages={messages} selfUserId={selfUserId} isGroup={isGroup} />
       <ConversationFooter
         messageText={messageText}
         setMessageText={setMessageText}

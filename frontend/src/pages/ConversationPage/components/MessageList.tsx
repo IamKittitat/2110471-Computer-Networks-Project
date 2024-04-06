@@ -4,10 +4,12 @@ import { MessageInformation } from "../types/MessageInformation"
 
 export default function MessageList({
   messages,
-  selfUserId
+  selfUserId,
+  isGroup
 }: {
   messages: MessageInformation[]
   selfUserId: string
+  isGroup: boolean
 }) {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -20,8 +22,6 @@ export default function MessageList({
   useEffect(() => {
     scrollToBottom() // Scroll to bottom when component first renders
   }, [messages])
-
-  console.log(messages)
 
   return (
     <div className="overflow-auto h-full py-[8px] px-[16px] space-y-1">
@@ -36,6 +36,13 @@ export default function MessageList({
             index === messages.length - 1
               ? true
               : message.sender_id !== messages[index + 1].sender_id
+          }
+          isShowName={
+            index === 0
+              ? message.sender_id !== selfUserId && isGroup
+              : message.sender_id !== messages[index - 1].sender_id &&
+                message.sender_id !== selfUserId &&
+                isGroup
           }
         />
       ))}

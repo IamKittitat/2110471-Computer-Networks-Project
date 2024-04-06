@@ -23,5 +23,8 @@ export const userServices = {
   },
   updateUsername: async (userId: string, username: string) => {
     return await userRepository.updateUsername(userId, username)
+  },
+  getUserInfo: async (userId: string) => {
+    return await userRepository.getUserInfo(userId)
   }
 }

@@ -16,7 +16,7 @@ export default function ConversationFooter({
   }
 
   return (
-    <div className="flex w-full px-[16px] py-[16px]">
+    <div className="flex w-full px-[16px] py-[12px] bg-white">
       <input
         type="text"
         value={messageText}
