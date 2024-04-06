@@ -55,7 +55,6 @@ const updateUsername = async (req: Request, res: Response) => {
 const getUserInfo = async (req: Request, res: Response) => {
   const userId = req.query.userId as string
   const user = await userServices.getUserInfo(userId)
-  console.log(user)
   if (user) {
     res.status(200).json(user)
   } else {
