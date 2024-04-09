@@ -41,5 +41,10 @@ export const userServices = {
   getUserInfo: async (userId: string) => {
     const response = await fetch(`${environment.backend.url}/user/info?userId=${userId}`)
     return await response.json()
+  },
+
+  getUsers: async () => {
+    const response = await fetch(`${environment.backend.url}/user`)
+    return await response.json()
   }
 }

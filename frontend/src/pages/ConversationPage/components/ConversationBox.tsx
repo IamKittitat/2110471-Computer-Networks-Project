@@ -40,7 +40,7 @@ export default function ConversationBox({
       setMessages(messages)
     }
     fetchMessages()
-  }, [])
+  }, [conversationId])
 
   useEffect(() => {
     socket.on("receiveMessage", (message: MessageInformation) => {
