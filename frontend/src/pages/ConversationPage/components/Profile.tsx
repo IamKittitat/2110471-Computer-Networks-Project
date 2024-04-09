@@ -18,7 +18,7 @@ export default function Profile({
       ></img>
       <div className="flex flex-col items-start gap-1">
         <p className="text-gray-900 font-semibold text-xl">{userName}</p>
-        <Button onClick={onClick} buttonText="Edit profile 🖋️"></Button>
+        <Button onClick={onClick} buttonText="Edit profile 🖋️" />
       </div>
     </div>
   )

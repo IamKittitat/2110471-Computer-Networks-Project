@@ -6,7 +6,8 @@ export default function ConversationList({
   mode,
   name,
   picture,
-  isJoin
+  isJoin,
+  onButton
 }: {
   onSelect: () => void
   isSelected: boolean
@@ -14,6 +15,7 @@ export default function ConversationList({
   name: string
   picture: string
   isJoin: boolean | null
+  onButton: () => void
 }) {
   const handleSelectConversation = () => {
     if (isJoin !== false) {
@@ -39,10 +41,10 @@ export default function ConversationList({
       </div>
       <div className="mx-2">
         {mode === "INDIVIDUAL" && isJoin === false && (
-          <Button onClick={() => alert("ngaae")} buttonText="New chat 💬"></Button>
+          <Button onClick={onButton} buttonText="New chat 💬" />
         )}
         {mode === "GROUP" && isJoin === false && (
-          <Button onClick={() => alert("ngaae")} buttonText="Join chat 💬"></Button>
+          <Button onClick={onButton} buttonText="Join chat 💬" />
         )}
       </div>
     </div>

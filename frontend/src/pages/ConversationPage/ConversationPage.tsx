@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import ConversationBox from "./components/ConversationBox"
 import ConversationSidebar from "./components/ConversationSideBar"
-import { MessageInformation } from "./types/MessageInformation"
 import { userServices } from "../../services/UserServices"
+import EditProfile from "./components/Modal/EditProfile"
+import CreateGroup from "./components/Modal/CreateGroup"
+import { UserInformation } from "./types/MessageInformation"
 
 export default function ConversationPage() {
   const userId = localStorage.getItem("token") || ""
@@ -12,17 +14,21 @@ export default function ConversationPage() {
   const [selectedConversation, setSelectedConversation] = useState<string>("")
   const [selectedConversationName, setSelectedConversationName] = useState<string>("")
   const [selectedConversationPicture, setSelectedConversationPicture] = useState<string>("")
-  const [messages, setMessages] = useState<MessageInformation[]>([])
   const [hasfetched, setHasFetched] = useState<boolean>(false)
+  const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState<boolean>(false)
+  const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState<boolean>(false)
+  const [allUsers, setAllUsers] = useState<UserInformation[]>([])
 
   const handleSelectConversation = (
     conversationId: string,
     conversationName: string,
-    conversationPicture: string
+    conversationPicture: string,
+    isGroup: boolean
   ) => {
     setSelectedConversation(conversationId)
     setSelectedConversationName(conversationName)
     setSelectedConversationPicture(conversationPicture)
+    setIsGroup(isGroup)
   }
 
   useEffect(() => {
@@ -37,7 +43,7 @@ export default function ConversationPage() {
       setHasFetched(true)
     }
     fetchSelf()
-  }, [])
+  }, [isEditProfileModalOpen])
 
   return (
     <div className="flex">
@@ -45,21 +51,18 @@ export default function ConversationPage() {
         {hasfetched && (
           <ConversationSidebar
             userName={userName}
-            setUserName={setUserName}
             userPicture={userPicture}
-            setUserPicture={setUserPicture}
             onConversationSelect={handleSelectConversation}
             selectedConversationId={selectedConversation}
-            setSelectedConversationName={setSelectedConversationName}
-            setSelectedConversationPicture={setSelectedConversationPicture}
             userId={userId}
-            setIsGroup={setIsGroup}
-            messages={messages}
+            setEditProfileModal={() => setIsEditProfileModalOpen(true)}
+            setCreateGroupModalOpen={() => setCreateGroupModalOpen(true)}
+            setAllUsers={setAllUsers}
           />
         )}
       </div>
       <div className="flex h-screen w-[66%]">
-        {selectedConversationName !== "" && (
+        {selectedConversation !== "" && (
           <>
             <ConversationBox
               conversationId={selectedConversation}
@@ -71,6 +74,26 @@ export default function ConversationPage() {
           </>
         )}
       </div>
+      {hasfetched && (
+        <EditProfile
+          oldName={userName}
+          oldPicture={userPicture}
+          userId={userId}
+          isVisible={isEditProfileModalOpen}
+          onClose={() => {
+            setIsEditProfileModalOpen(false)
+          }}
+        />
+      )}
+      {hasfetched && (
+        <CreateGroup
+          allUsers={allUsers}
+          isVisible={isCreateGroupModalOpen}
+          onClose={() => {
+            setCreateGroupModalOpen(false)
+          }}
+        />
+      )}
     </div>
   )
 }
