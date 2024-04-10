@@ -123,46 +123,48 @@ export default function ConversationSidebar({
           Groups
         </div>
       </div>
-      {selectedMode === "GROUP" && <NewGroup onClick={setCreateGroupModalOpen} />}
-      {filteredConversations.map((conversation) => (
-        <ConversationList
-          key={`${conversation.conversation_id}_${conversation.username}`}
-          onSelect={() =>
-            onConversationSelect(
-              conversation.conversation_id || "",
-              conversation.group_name || conversation.username || "",
-              conversation.profile_picture ||
-                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUEupjs-v_GGm_M3POkQCZZwcrdUyHXtIt2vcFL1ahPEMZ20cP1rC5c7oArrtBKoTS5AU&usqp=CAU",
-              conversation.group_name !== null
-            )
-          }
-          isSelected={conversation.conversation_id === selectedConversationId}
-          mode={selectedMode}
-          name={conversation.group_name || conversation.username || ""}
-          picture={
-            conversation.profile_picture ||
-            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUEupjs-v_GGm_M3POkQCZZwcrdUyHXtIt2vcFL1ahPEMZ20cP1rC5c7oArrtBKoTS5AU&usqp=CAU"
-          }
-          isJoin={conversation.is_join}
-          onButton={() => handleJoinGroup(conversation.conversation_id || "")}
-        />
-      ))}
-      {selectedMode === "INDIVIDUAL" &&
-        newConversations.map((conversation) => (
+      <div className="overflow-y-auto w-full">
+        {selectedMode === "GROUP" && <NewGroup onClick={setCreateGroupModalOpen} />}
+        {filteredConversations.map((conversation) => (
           <ConversationList
-            key={`${conversation.username}`}
-            onSelect={() => handleNewChat(conversation.user_id || "")}
+            key={`${conversation.conversation_id}_${conversation.username}`}
+            onSelect={() =>
+              onConversationSelect(
+                conversation.conversation_id || "",
+                conversation.group_name || conversation.username || "",
+                conversation.profile_picture ||
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUEupjs-v_GGm_M3POkQCZZwcrdUyHXtIt2vcFL1ahPEMZ20cP1rC5c7oArrtBKoTS5AU&usqp=CAU",
+                conversation.group_name !== null
+              )
+            }
             isSelected={conversation.conversation_id === selectedConversationId}
             mode={selectedMode}
-            name={conversation.username || ""}
+            name={conversation.group_name || conversation.username || ""}
             picture={
               conversation.profile_picture ||
               "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUEupjs-v_GGm_M3POkQCZZwcrdUyHXtIt2vcFL1ahPEMZ20cP1rC5c7oArrtBKoTS5AU&usqp=CAU"
             }
             isJoin={conversation.is_join}
-            onButton={() => handleNewChat(conversation.user_id || "")}
+            onButton={() => handleJoinGroup(conversation.conversation_id || "")}
           />
         ))}
+        {selectedMode === "INDIVIDUAL" &&
+          newConversations.map((conversation) => (
+            <ConversationList
+              key={`${conversation.username}`}
+              onSelect={() => handleNewChat(conversation.user_id || "")}
+              isSelected={conversation.conversation_id === selectedConversationId}
+              mode={selectedMode}
+              name={conversation.username || ""}
+              picture={
+                conversation.profile_picture ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUEupjs-v_GGm_M3POkQCZZwcrdUyHXtIt2vcFL1ahPEMZ20cP1rC5c7oArrtBKoTS5AU&usqp=CAU"
+              }
+              isJoin={conversation.is_join}
+              onButton={() => handleNewChat(conversation.user_id || "")}
+            />
+          ))}
+      </div>
     </div>
   )
 }

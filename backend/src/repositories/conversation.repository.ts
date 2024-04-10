@@ -102,6 +102,7 @@ export const conversationRepository = {
           SELECT conversation_id
           FROM CONVERSATION
           WHERE conversation_id = ANY($1)
+          AND is_group=FALSE
         `,
         [myConversation.rows.map((row) => row.conversation_id)]
       )
