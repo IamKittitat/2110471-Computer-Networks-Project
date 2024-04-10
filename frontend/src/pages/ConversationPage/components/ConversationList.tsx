@@ -24,7 +24,7 @@ export default function ConversationList({
   }
   return (
     <div
-      className={`flex items-center justify-between h-[79px] w-[95%] rounded-md mt-[10px] cursor-pointer ${
+      className={`flex items-center justify-between h-[79px] w-[95%] rounded-md mt-[10px] py-2 cursor-pointer ${
         isSelected ? "bg-blue-100" : ""
       }`}
       onClick={handleSelectConversation}

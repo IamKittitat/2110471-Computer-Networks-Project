@@ -47,18 +47,20 @@ export default function CreateGroup({
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-        {allUsers.map((user) => (
-          <NameList
-            key={`${user.username}`}
-            onAdd={() => handleAddUser(user.user_id || "")}
-            onRemove={() => handleRemoveUser(user.user_id || "")}
-            name={user.username || ""}
-            picture={
-              user.profile_picture ||
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUEupjs-v_GGm_M3POkQCZZwcrdUyHXtIt2vcFL1ahPEMZ20cP1rC5c7oArrtBKoTS5AU&usqp=CAU"
-            }
-          />
-        ))}
+        <div className="overflow-y-auto w-full">
+          {allUsers.map((user) => (
+            <NameList
+              key={`${user.username}`}
+              onAdd={() => handleAddUser(user.user_id || "")}
+              onRemove={() => handleRemoveUser(user.user_id || "")}
+              name={user.username || ""}
+              picture={
+                user.profile_picture ||
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUEupjs-v_GGm_M3POkQCZZwcrdUyHXtIt2vcFL1ahPEMZ20cP1rC5c7oArrtBKoTS5AU&usqp=CAU"
+              }
+            />
+          ))}
+        </div>
         <div className="flex justify-end gap-1 w-full">
           <Button onClick={onClose} buttonText="Cancel" isRed={true} />
           <Button onClick={handleSubmitButton} buttonText="Done" isBlue={true} />
