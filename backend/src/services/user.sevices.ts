@@ -1,7 +1,17 @@
+import { Socket } from "socket.io"
 import bucket from "../configs/firebase"
 import { userRepository } from "../repositories/user.repository"
 
 export const userServices = {
+  // Socket service
+  getConnectedUser: async (socket: Socket) => {
+    socket.on("connected-user", async () => {
+      const users = await userServices.getListOfUsers()
+      socket.emit("receive-connected-user", users)
+    })
+  },
+
+  // User service
   register: async (username: string, password: string) => {
     return await userRepository.register(username, password)
   },

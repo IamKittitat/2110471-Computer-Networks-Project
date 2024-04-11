@@ -4,7 +4,7 @@ import { User } from "../models/user.model"
 export const userRepository = {
   getUsersList: async (): Promise<User[]> => {
     try {
-      const users = await db.query("SELECT * FROM USER_TABLE")
+      const users = await db.query("SELECT * FROM USER_TABLE WHERE is_connected = True")
       return users.rows
     } catch (error) {
       console.error("Error getting USER_TABLE list:", error)
@@ -72,6 +72,17 @@ export const userRepository = {
       return user.rows[0]
     } catch (error) {
       console.error("Error getting username:", error)
+      return null
+    }
+  },
+  removeUser: async (userId: string): Promise<string | null> => {
+    try {
+      const user = await db.query("UPDATE USER_TABLE SET is_connected = False WHERE user_id = $1", [
+        userId
+      ])
+      return "User deleted successfully!"
+    } catch (error) {
+      console.error("Error deleting user:", error)
       return null
     }
   }
