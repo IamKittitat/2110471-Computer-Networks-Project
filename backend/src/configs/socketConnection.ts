@@ -2,6 +2,7 @@ import { Server } from "socket.io"
 import { createServer } from "http"
 import { Application } from "express"
 import { conversationService } from "../services/conversation.service"
+import { userServices } from "../services/user.sevices"
 
 export const io = new Server()
 
@@ -18,6 +19,7 @@ export const connectToSocket = (app: Application) => {
     await conversationService.sendMessage(socket)
     conversationService.joinRoom(socket)
     conversationService.disconnect(socket)
+    await userServices.getConnectedUser(socket)
   })
 
   return server

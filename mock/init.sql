@@ -7,6 +7,7 @@ CREATE TABLE USER_TABLE (
     user_id CHAR(36) PRIMARY KEY DEFAULT uuid_generate_v4(),
     username VARCHAR(100) NOT NULL UNIQUE,
     profile_picture VARCHAR(300),
+    is_connected BOOLEAN NOT NULL DEFAULT TRUE,
     password VARCHAR(500) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
