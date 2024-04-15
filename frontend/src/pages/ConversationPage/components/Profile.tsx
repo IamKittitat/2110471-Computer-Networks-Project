@@ -1,5 +1,6 @@
 import { environment } from "../../../common/constants/environment"
 import { LocalStorageUtils } from "../../../common/utils/LocalStorageUtils"
+import { userServices } from "../../../services/UserServices"
 import Button from "./Button"
 import EditProfileIcon from "./EditProfileIcon"
 import { useNavigate } from "react-router-dom"
@@ -8,16 +9,19 @@ import io from "socket.io-client"
 export default function Profile({
   userPicture,
   userName,
-  onClick
+  onClick,
+  userId
 }: {
   userPicture: string | null
   userName: string | null
   onClick: () => void
+  userId: string
 }) {
   const navigate = useNavigate()
   const socket = io(environment.backend.url)
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await userServices.logout(userId)
     socket.emit("connected-user")
     LocalStorageUtils.removeData("token")
     navigate("/home")
