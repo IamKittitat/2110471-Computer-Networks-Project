@@ -62,11 +62,22 @@ const getUserInfo = async (req: Request, res: Response) => {
   }
 }
 
+const removeUser = async (req: Request, res: Response) => {
+  const userId = req.query.userId as string
+  const user = await userServices.removeUser(userId)
+  if (user) {
+    res.status(200).json(user)
+  } else {
+    res.status(500).json("Error removing user")
+  }
+}
+
 export const userController = {
   getListOfUsers,
   register,
   login,
   upload,
   updateUsername,
-  getUserInfo
+  getUserInfo,
+  removeUser
 }

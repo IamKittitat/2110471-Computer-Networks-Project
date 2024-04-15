@@ -36,5 +36,8 @@ export const userServices = {
   },
   getUserInfo: async (userId: string) => {
     return await userRepository.getUserInfo(userId)
+  },
+  removeUser: async (userId: string) => {
+    return await userRepository.removeUser(userId)
   }
 }
