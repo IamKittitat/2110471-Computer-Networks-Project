@@ -18,6 +18,9 @@ export const userServices = {
   login: async (username: string, password: string) => {
     return await userRepository.login(username, password)
   },
+  reconnect: async (userId: string) => {
+    return await userRepository.reconnect(userId)
+  },
   getListOfUsers: async () => {
     return await userRepository.getUsersList()
   },
@@ -36,5 +39,8 @@ export const userServices = {
   },
   getUserInfo: async (userId: string) => {
     return await userRepository.getUserInfo(userId)
+  },
+  removeUser: async (userId: string) => {
+    return await userRepository.removeUser(userId)
   }
 }

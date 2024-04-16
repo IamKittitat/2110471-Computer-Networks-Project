@@ -100,7 +100,12 @@ export default function ConversationSidebar({
 
   return (
     <div className="overflow-y-auto h-screen flex flex-col items-center justify-start py-8 px-5">
-      <Profile userPicture={userPicture} userName={userName} onClick={setEditProfileModal} />
+      <Profile
+        userPicture={userPicture}
+        userName={userName}
+        onClick={setEditProfileModal}
+        userId={userId}
+      />
       <div className="flex w-full mt-3">
         <div
           className={`cursor-pointer p-2 border-b-2 w-full flex justify-center font-semibold ${

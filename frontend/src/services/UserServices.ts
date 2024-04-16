@@ -38,6 +38,11 @@ export const userServices = {
     }
   },
 
+  logout: async (userId: string) => {
+    const response = await fetch(`${environment.backend.url}/user/remove?userId=${userId}`)
+    return await response.json()
+  },
+
   getUserInfo: async (userId: string) => {
     const response = await fetch(`${environment.backend.url}/user/info?userId=${userId}`)
     return await response.json()

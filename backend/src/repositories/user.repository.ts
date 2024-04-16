@@ -39,6 +39,17 @@ export const userRepository = {
       return null
     }
   },
+  reconnect: async (userId: string): Promise<string | null> => {
+    try {
+      const user = await db.query("UPDATE USER_TABLE SET is_connected = True WHERE user_id = $1", [
+        userId
+      ])
+      return "User reconnected successfully!"
+    } catch (error) {
+      console.error("Error reconnecting user:", error)
+      return null
+    }
+  },
   updateProfilePicture: async (userId: string, profile_picture: string): Promise<User | null> => {
     try {
       const user = await db.query(

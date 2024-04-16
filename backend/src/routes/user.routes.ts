@@ -13,5 +13,6 @@ router.post("/login", userController.login)
 router.post("/upload", upload.single("profile"), userController.upload)
 router.post("/username", userController.updateUsername)
 router.get("/info", userController.getUserInfo)
+router.get("/remove", userController.removeUser)
 
 export default router
