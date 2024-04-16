@@ -18,6 +18,9 @@ export const userServices = {
   login: async (username: string, password: string) => {
     return await userRepository.login(username, password)
   },
+  reconnect: async (userId: string) => {
+    return await userRepository.reconnect(userId)
+  },
   getListOfUsers: async () => {
     return await userRepository.getUsersList()
   },

@@ -20,7 +20,12 @@ const login = async (req: Request, res: Response) => {
   const { username, password } = req.body
   const user_id = await userServices.login(username, password)
   if (user_id) {
-    res.status(200).json(user_id)
+    const user = await userServices.reconnect(user_id)
+    if (user) {
+      res.status(200).json(user_id)
+    } else {
+      res.status(500).json("Error reconnecting user")
+    }
   } else {
     res.status(500).json("Error logging in")
   }
