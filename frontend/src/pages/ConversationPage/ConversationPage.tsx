@@ -57,6 +57,7 @@ export default function ConversationPage() {
             userId={userId}
             setEditProfileModal={() => setIsEditProfileModalOpen(true)}
             setCreateGroupModalOpen={() => setCreateGroupModalOpen(true)}
+            allUsers={allUsers}
             setAllUsers={setAllUsers}
           />
         )}

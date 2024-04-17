@@ -6,6 +6,10 @@ import { conversationServices } from "../../../services/ConversationServices"
 import { userServices } from "../../../services/UserServices"
 import NewGroup from "./NewGroup"
 import { User } from "../../../common/types/user"
+import io from "socket.io-client"
+import { environment } from "../../../common/constants/environment"
+
+const socket = io(environment.backend.url)
 
 export default function ConversationSidebar({
   userName,
@@ -15,6 +19,7 @@ export default function ConversationSidebar({
   userId,
   setEditProfileModal,
   setCreateGroupModalOpen,
+  allUsers,
   setAllUsers
 }: {
   userName: string | null
@@ -29,6 +34,7 @@ export default function ConversationSidebar({
   userId: string
   setEditProfileModal: () => void
   setCreateGroupModalOpen: () => void
+  allUsers: User[]
   setAllUsers: React.Dispatch<React.SetStateAction<User[]>>
 }) {
   const [individualConversationIds, setIndividualConversationIds] = useState<
@@ -49,6 +55,22 @@ export default function ConversationSidebar({
     await conversationServices.joinGroupConversation(userId, conversationId)
     setToggleList(!toggleList)
   }
+
+  useEffect(() => {
+    socket.emit("connected-user")
+    socket.on("receive-connected-user", (users: User[]) => {
+      console.log("Connected users", users)
+      setAllUsers(users)
+    })
+    socket.emit("group-list")
+    socket.on("receive-group-list", (groupList: any) => {
+      // console.log("Group list", groupList)
+    })
+    return () => {
+      socket.off("receive-connected-user")
+      socket.off("receive-group-list")
+    }
+  }, [])
 
   useEffect(() => {
     let knownUsers: string[] = []
@@ -72,16 +94,14 @@ export default function ConversationSidebar({
 
     const fetchUsers = async () => {
       await fetchConversations()
-      const users = await userServices.getUsers()
-      setAllUsers(users)
       let newUsers: ConversationInformation[] = []
-      for (let i = 0; i < users.length; i++) {
-        if (!knownUsers.includes(users[i].username, 0) && users[i].username !== userName) {
+      for (let i = 0; i < allUsers.length; i++) {
+        if (!knownUsers.includes(allUsers[i].username, 0) && allUsers[i].username !== userName) {
           newUsers.push({
-            username: users[i].username,
-            profile_picture: users[i].profile_picture,
+            username: allUsers[i].username,
+            profile_picture: allUsers[i].profile_picture,
             is_join: false,
-            user_id: users[i].user_id
+            user_id: allUsers[i].user_id
           })
         }
       }
@@ -89,7 +109,7 @@ export default function ConversationSidebar({
     }
 
     fetchUsers()
-  }, [toggleList])
+  }, [toggleList, allUsers])
 
   useEffect(() => {
     if (selectedMode === "INDIVIDUAL") {
