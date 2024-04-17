@@ -1,11 +1,11 @@
 import { useState } from "react"
 import ModalOverlay from "./ModalOverlay"
 import Button from "../Button"
-import { UserInformation } from "../../types/MessageInformation"
 import NameList from "./NameList"
 import { conversationServices } from "../../../../services/ConversationServices"
 import io from "socket.io-client"
 import { environment } from "../../../../common/constants/environment"
+import { User } from "../../../../common/types/user"
 
 const socket = io(environment.backend.url)
 
@@ -14,7 +14,7 @@ export default function CreateGroup({
   isVisible,
   onClose
 }: {
-  allUsers: UserInformation[]
+  allUsers: User[]
   isVisible: boolean
   onClose: () => void
 }) {
@@ -23,7 +23,7 @@ export default function CreateGroup({
 
   const handleSubmitButton = async () => {
     await conversationServices.createGroupConversation(addingList, name)
-    socket.emit("group-list");
+    socket.emit("group-list")
     onClose()
   }
 

@@ -12,12 +12,3 @@ export interface ConversationInformation {
   is_join: boolean | null
   user_id?: string | null
 }
-
-export interface UserInformation {
-  user_id: string
-  username: string
-  profile_picture: string
-  password: string
-  created_at: string
-  updated_at: string
-}

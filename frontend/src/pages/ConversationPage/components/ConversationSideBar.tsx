@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
 import ConversationList from "./ConversationList"
-import { ConversationInformation, UserInformation } from "../types/MessageInformation"
+import { ConversationInformation } from "../types/MessageInformation"
 import Profile from "./Profile"
 import { conversationServices } from "../../../services/ConversationServices"
 import { userServices } from "../../../services/UserServices"
 import NewGroup from "./NewGroup"
+import { User } from "../../../common/types/user"
 
 export default function ConversationSidebar({
   userName,
@@ -28,7 +29,7 @@ export default function ConversationSidebar({
   userId: string
   setEditProfileModal: () => void
   setCreateGroupModalOpen: () => void
-  setAllUsers: React.Dispatch<React.SetStateAction<UserInformation[]>>
+  setAllUsers: React.Dispatch<React.SetStateAction<User[]>>
 }) {
   const [individualConversationIds, setIndividualConversationIds] = useState<
     ConversationInformation[]
