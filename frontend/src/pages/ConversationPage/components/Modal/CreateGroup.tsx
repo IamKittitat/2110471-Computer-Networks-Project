@@ -24,7 +24,7 @@ export default function CreateGroup({
   const handleSubmitButton = async () => {
     await conversationServices.createGroupConversation(addingList, name)
     socket.emit("group-list")
-    setAddingList([])
+    setName("")
     onClose()
   }
 
@@ -50,7 +50,7 @@ export default function CreateGroup({
         <div className="flex flex-col justify-start w-full gap-1">
           <p className="font-semibold">Group Name</p>
           <textarea
-            id="name"
+            id="groupName"
             className="h-9 w-full resize-none overflow-hidden px-3 py-1 border-gray-200 border-[1.5px] rounded-md"
             value={name}
             placeholder="New group"

@@ -41,6 +41,7 @@ export default function ConversationSidebar({
     ConversationInformation[]
   >([])
   const [groupConversationIds, setGroupConversationIds] = useState<ConversationInformation[]>([])
+  const [groupList, setGroupList] = useState<ConversationInformation[]>([])
   const [filteredConversations, setFilteredConversations] = useState<ConversationInformation[]>([])
   const [newConversations, setNewConversations] = useState<ConversationInformation[]>([])
   const [selectedMode, setSelectedMode] = useState<"INDIVIDUAL" | "GROUP">("INDIVIDUAL")
@@ -65,7 +66,7 @@ export default function ConversationSidebar({
     socket.emit("group-list")
     socket.on("receive-group-list", (groupList: any) => {
       console.log("Group list", groupList)
-      setGroupConversationIds(groupList)
+      setGroupList(groupList)
     })
     return () => {
       socket.off("receive-connected-user")
@@ -81,6 +82,13 @@ export default function ConversationSidebar({
         "individual"
       )
       setIndividualConversationIds(individualConversationIds)
+
+      const groupConversationIds = await conversationServices.getConversationsByUserId(
+        userId,
+        "group"
+      )
+      setGroupConversationIds(groupConversationIds)
+
       for (let i = 0; i < individualConversationIds.length; i++) {
         knownUsers.push(individualConversationIds[i].username)
       }
@@ -105,7 +113,7 @@ export default function ConversationSidebar({
     }
 
     fetchUsers()
-  }, [toggleList, allUsers, groupConversationIds])
+  }, [toggleList, allUsers, groupList])
 
   useEffect(() => {
     if (selectedMode === "INDIVIDUAL") {
