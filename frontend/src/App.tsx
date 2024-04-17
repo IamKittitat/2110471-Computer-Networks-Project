@@ -17,8 +17,13 @@ const App = () => {
     socket.on("receive-connected-user", (users: User[]) => {
       console.log("Connected users", users)
     })
+    socket.emit("group-list")
+    socket.on("receive-group-list", (groupList: any) => {
+      console.log("Group list", groupList)
+    })
     return () => {
       socket.off("receive-connected-user")
+      socket.off("receive-group-list")
     }
   }, [])
 

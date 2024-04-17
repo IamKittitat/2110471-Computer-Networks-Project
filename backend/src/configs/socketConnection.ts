@@ -20,6 +20,7 @@ export const connectToSocket = (app: Application) => {
     conversationService.joinRoom(socket)
     conversationService.disconnect(socket)
     await userServices.getConnectedUser(socket)
+    await conversationService.getGroupList(socket)
   })
 
   return server

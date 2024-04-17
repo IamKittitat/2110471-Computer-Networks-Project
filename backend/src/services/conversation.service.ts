@@ -27,6 +27,13 @@ export const conversationService = {
       console.log("User disconnected")
     })
   },
+  getGroupList: async (socket: Socket) => {
+    console.log("getGroupList")
+    socket.on("group-list", async (userId: string) => {
+      const groupList = await conversationRepository.getGroupConversationList(userId)
+      socket.emit("receive-group-list", groupList)
+    })
+  },
 
   // Conversation service
   getIndividualConversationList: async (userId: string) => {
