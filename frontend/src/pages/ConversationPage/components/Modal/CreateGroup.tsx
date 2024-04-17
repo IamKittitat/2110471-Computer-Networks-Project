@@ -19,21 +19,26 @@ export default function CreateGroup({
   onClose: () => void
 }) {
   const [name, setName] = useState<string>("")
-  let addingList: string[] = []
+  const [addingList, setAddingList] = useState<string[]>([])
 
   const handleSubmitButton = async () => {
     await conversationServices.createGroupConversation(addingList, name)
     socket.emit("group-list")
+    setAddingList([])
     onClose()
   }
 
   const handleAddUser = async (userId: string) => {
-    addingList.push(userId)
+    let l = addingList
+    l.push(userId)
+    setAddingList(l)
   }
 
   const handleRemoveUser = async (userId: string) => {
-    const idx = addingList.indexOf(userId)
-    addingList.splice(idx, 1)
+    let l = addingList
+    const idx = l.indexOf(userId)
+    l.splice(idx, 1)
+    setAddingList(l)
   }
 
   return (
