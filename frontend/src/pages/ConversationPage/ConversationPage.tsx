@@ -4,7 +4,7 @@ import ConversationSidebar from "./components/ConversationSideBar"
 import { userServices } from "../../services/UserServices"
 import EditProfile from "./components/Modal/EditProfile"
 import CreateGroup from "./components/Modal/CreateGroup"
-import { UserInformation } from "./types/MessageInformation"
+import { User } from "../../common/types/user"
 
 export default function ConversationPage() {
   const userId = localStorage.getItem("token") || ""
@@ -17,7 +17,7 @@ export default function ConversationPage() {
   const [hasfetched, setHasFetched] = useState<boolean>(false)
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState<boolean>(false)
   const [isCreateGroupModalOpen, setCreateGroupModalOpen] = useState<boolean>(false)
-  const [allUsers, setAllUsers] = useState<UserInformation[]>([])
+  const [allUsers, setAllUsers] = useState<User[]>([])
 
   const handleSelectConversation = (
     conversationId: string,
@@ -57,6 +57,7 @@ export default function ConversationPage() {
             userId={userId}
             setEditProfileModal={() => setIsEditProfileModalOpen(true)}
             setCreateGroupModalOpen={() => setCreateGroupModalOpen(true)}
+            allUsers={allUsers}
             setAllUsers={setAllUsers}
           />
         )}

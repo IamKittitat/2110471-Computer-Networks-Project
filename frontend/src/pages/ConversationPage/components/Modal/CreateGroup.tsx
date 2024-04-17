@@ -1,11 +1,11 @@
 import { useState } from "react"
 import ModalOverlay from "./ModalOverlay"
 import Button from "../Button"
-import { UserInformation } from "../../types/MessageInformation"
 import NameList from "./NameList"
 import { conversationServices } from "../../../../services/ConversationServices"
 import io from "socket.io-client"
 import { environment } from "../../../../common/constants/environment"
+import { User } from "../../../../common/types/user"
 
 const socket = io(environment.backend.url)
 
@@ -14,26 +14,31 @@ export default function CreateGroup({
   isVisible,
   onClose
 }: {
-  allUsers: UserInformation[]
+  allUsers: User[]
   isVisible: boolean
   onClose: () => void
 }) {
   const [name, setName] = useState<string>("")
-  let addingList: string[] = []
+  const [addingList, setAddingList] = useState<string[]>([])
 
   const handleSubmitButton = async () => {
     await conversationServices.createGroupConversation(addingList, name)
-    socket.emit("group-list");
+    socket.emit("group-list")
+    setName("")
     onClose()
   }
 
   const handleAddUser = async (userId: string) => {
-    addingList.push(userId)
+    let l = addingList
+    l.push(userId)
+    setAddingList(l)
   }
 
   const handleRemoveUser = async (userId: string) => {
-    const idx = addingList.indexOf(userId)
-    addingList.splice(idx, 1)
+    let l = addingList
+    const idx = l.indexOf(userId)
+    l.splice(idx, 1)
+    setAddingList(l)
   }
 
   return (
@@ -45,7 +50,7 @@ export default function CreateGroup({
         <div className="flex flex-col justify-start w-full gap-1">
           <p className="font-semibold">Group Name</p>
           <textarea
-            id="name"
+            id="groupName"
             className="h-9 w-full resize-none overflow-hidden px-3 py-1 border-gray-200 border-[1.5px] rounded-md"
             value={name}
             placeholder="New group"

@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react"
 import ConversationList from "./ConversationList"
-import { ConversationInformation, UserInformation } from "../types/MessageInformation"
+import { ConversationInformation } from "../types/MessageInformation"
 import Profile from "./Profile"
 import { conversationServices } from "../../../services/ConversationServices"
 import { userServices } from "../../../services/UserServices"
 import NewGroup from "./NewGroup"
+import { User } from "../../../common/types/user"
+import io from "socket.io-client"
+import { environment } from "../../../common/constants/environment"
+
+const socket = io(environment.backend.url)
 
 export default function ConversationSidebar({
   userName,
@@ -14,6 +19,7 @@ export default function ConversationSidebar({
   userId,
   setEditProfileModal,
   setCreateGroupModalOpen,
+  allUsers,
   setAllUsers
 }: {
   userName: string | null
@@ -28,12 +34,14 @@ export default function ConversationSidebar({
   userId: string
   setEditProfileModal: () => void
   setCreateGroupModalOpen: () => void
-  setAllUsers: React.Dispatch<React.SetStateAction<UserInformation[]>>
+  allUsers: User[]
+  setAllUsers: React.Dispatch<React.SetStateAction<User[]>>
 }) {
   const [individualConversationIds, setIndividualConversationIds] = useState<
     ConversationInformation[]
   >([])
   const [groupConversationIds, setGroupConversationIds] = useState<ConversationInformation[]>([])
+  const [groupList, setGroupList] = useState<ConversationInformation[]>([])
   const [filteredConversations, setFilteredConversations] = useState<ConversationInformation[]>([])
   const [newConversations, setNewConversations] = useState<ConversationInformation[]>([])
   const [selectedMode, setSelectedMode] = useState<"INDIVIDUAL" | "GROUP">("INDIVIDUAL")
@@ -50,6 +58,23 @@ export default function ConversationSidebar({
   }
 
   useEffect(() => {
+    socket.emit("connected-user")
+    socket.on("receive-connected-user", (users: User[]) => {
+      console.log("Connected users", users)
+      setAllUsers(users)
+    })
+    socket.emit("group-list")
+    socket.on("receive-group-list", (groupList: any) => {
+      console.log("Group list", groupList)
+      setGroupList(groupList)
+    })
+    return () => {
+      socket.off("receive-connected-user")
+      socket.off("receive-group-list")
+    }
+  }, [])
+
+  useEffect(() => {
     let knownUsers: string[] = []
     const fetchConversations = async () => {
       const individualConversationIds = await conversationServices.getConversationsByUserId(
@@ -57,30 +82,30 @@ export default function ConversationSidebar({
         "individual"
       )
       setIndividualConversationIds(individualConversationIds)
-      for (let i = 0; i < individualConversationIds.length; i++) {
-        knownUsers.push(individualConversationIds[i].username)
-      }
+
       const groupConversationIds = await conversationServices.getConversationsByUserId(
         userId,
         "group"
       )
       setGroupConversationIds(groupConversationIds)
+
+      for (let i = 0; i < individualConversationIds.length; i++) {
+        knownUsers.push(individualConversationIds[i].username)
+      }
       if (selectedMode === "GROUP") setFilteredConversations(groupConversationIds)
       else setFilteredConversations(individualConversationIds)
     }
 
     const fetchUsers = async () => {
       await fetchConversations()
-      const users = await userServices.getUsers()
-      setAllUsers(users)
       let newUsers: ConversationInformation[] = []
-      for (let i = 0; i < users.length; i++) {
-        if (!knownUsers.includes(users[i].username, 0) && users[i].username !== userName) {
+      for (let i = 0; i < allUsers.length; i++) {
+        if (!knownUsers.includes(allUsers[i].username, 0) && allUsers[i].username !== userName) {
           newUsers.push({
-            username: users[i].username,
-            profile_picture: users[i].profile_picture,
+            username: allUsers[i].username,
+            profile_picture: allUsers[i].profile_picture,
             is_join: false,
-            user_id: users[i].user_id
+            user_id: allUsers[i].user_id
           })
         }
       }
@@ -88,7 +113,7 @@ export default function ConversationSidebar({
     }
 
     fetchUsers()
-  }, [toggleList])
+  }, [toggleList, allUsers, groupList])
 
   useEffect(() => {
     if (selectedMode === "INDIVIDUAL") {

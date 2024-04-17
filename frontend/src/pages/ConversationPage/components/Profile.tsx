@@ -6,6 +6,8 @@ import EditProfileIcon from "./EditProfileIcon"
 import { useNavigate } from "react-router-dom"
 import io from "socket.io-client"
 
+const socket = io(environment.backend.url)
+
 export default function Profile({
   userPicture,
   userName,
@@ -18,7 +20,6 @@ export default function Profile({
   userId: string
 }) {
   const navigate = useNavigate()
-  const socket = io(environment.backend.url)
 
   const handleLogout = async () => {
     await userServices.logout(userId)
