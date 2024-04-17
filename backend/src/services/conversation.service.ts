@@ -31,7 +31,7 @@ export const conversationService = {
     console.log("getGroupList")
     socket.on("group-list", async (userId: string) => {
       const groupList = await conversationRepository.getGroupConversationList(userId)
-      socket.emit("receive-group-list", groupList)
+      socket.to("group-list").emit("receive-group-list", groupList)
     })
   },
 

@@ -47,6 +47,7 @@ const App = () => {
           if (register === null && login === null) {
             alert("Error login user")
           } else {
+            console.log("CHECK")
             localStorage.setItem("token", login)
             socket.emit("connected-user")
           }

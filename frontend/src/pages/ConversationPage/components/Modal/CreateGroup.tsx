@@ -4,6 +4,10 @@ import Button from "../Button"
 import { UserInformation } from "../../types/MessageInformation"
 import NameList from "./NameList"
 import { conversationServices } from "../../../../services/ConversationServices"
+import io from "socket.io-client"
+import { environment } from "../../../../common/constants/environment"
+
+const socket = io(environment.backend.url)
 
 export default function CreateGroup({
   allUsers,
@@ -19,6 +23,7 @@ export default function CreateGroup({
 
   const handleSubmitButton = async () => {
     await conversationServices.createGroupConversation(addingList, name)
+    socket.emit("group-list");
     onClose()
   }
 

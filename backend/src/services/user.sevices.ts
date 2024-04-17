@@ -7,7 +7,7 @@ export const userServices = {
   getConnectedUser: async (socket: Socket) => {
     socket.on("connected-user", async () => {
       const users = await userServices.getListOfUsers()
-      socket.emit("receive-connected-user", users)
+      socket.to("connected-users").emit("receive-connected-user", users)
     })
   },
 
