@@ -80,11 +80,10 @@ export default function ConversationBox({
     setBgNumber((bgNumber + 1) % bgList.length)
     setBg(bgList[bgNumber])
   }
-
   return (
     <div
-      className={`relative flex flex-col h-screen w-full bg-cover
-    bg-[url(${bg})]`}
+      className={`relative flex flex-col h-screen w-full bg-cover`}
+      style={{ backgroundImage: `url(${bg})` }}
     >
       <ConversationHeader
         conversationName={conversationName}
